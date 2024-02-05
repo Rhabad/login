@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
-public class LoginController {
+public class RegisterController {
 
     @Autowired
     private IRegisterService registerService;
@@ -76,14 +76,5 @@ public class LoginController {
         }
     }
 
-    /*
-    * Este metodo enviara datos, confirmara en la BD
-    * luego entrara si coincide el email y el password
-    * con alguno de los registros en la BD
-    * */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(){
-        return null;
-    }
 
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface IRegisterService {
     List<Register> findAll();
     Register save(RegisterDto registerDto);
+
+    Register validarRegistro(Register register);
 }

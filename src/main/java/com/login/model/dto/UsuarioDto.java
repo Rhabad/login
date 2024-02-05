@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Builder
-public class RegisterDto implements Serializable {
+public class UsuarioDto implements Serializable {
     private Long id;
     private String nombre;
     private String apellido;

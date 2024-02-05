@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "login")
+@Table(name = "usuario")
 @Data @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Register {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

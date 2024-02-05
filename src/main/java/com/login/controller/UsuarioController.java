@@ -1,9 +1,9 @@
 package com.login.controller;
 
-import com.login.model.dto.RegisterDto;
-import com.login.model.entity.Register;
+import com.login.model.dto.UsuarioDto;
+import com.login.model.entity.Usuario;
 import com.login.model.payload.MensajeResponse;
-import com.login.service.IRegisterService;
+import com.login.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -17,15 +17,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
-public class RegisterController {
+public class UsuarioController {
 
     @Autowired
-    private IRegisterService registerService;
+    private IUsuarioService usuarioService;
 
     // Mostrar los usuarios, es algo que no se implementara, pero sirve para mirar.
     @RequestMapping(value = "/show")
     public ResponseEntity<?> showAll() {
-        List<Register> getList = registerService.findAll();
+        List<Usuario> getList = usuarioService.findAll();
 
         if (getList.isEmpty()) {
             return new ResponseEntity<>(MensajeResponse.builder()
@@ -47,23 +47,23 @@ public class RegisterController {
     * Crear un nuevo registro.
     * */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> create(@RequestBody RegisterDto registerDto){
-        Register registerSave = null;
+    public ResponseEntity<?> create(@RequestBody UsuarioDto usuarioDto){
+        Usuario usuarioSave = null;
 
         try {
-            registerSave = registerService.save(registerDto);
+            usuarioSave = usuarioService.save(usuarioDto);
 
-            registerDto = RegisterDto.builder()
-                        .id(registerSave.getId())
-                        .nombre(registerSave.getNombre())
-                        .apellido(registerSave.getApellido())
-                        .email(registerSave.getEmail())
-                        .password(registerSave.getPassword())
+            usuarioDto = UsuarioDto.builder()
+                        .id(usuarioSave.getId())
+                        .nombre(usuarioSave.getNombre())
+                        .apellido(usuarioSave.getApellido())
+                        .email(usuarioSave.getEmail())
+                        .password(usuarioSave.getPassword())
                     .build();
 
             return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("Usuario Registado Con Exito")
-                        .object(registerDto)
+                        .object(usuarioDto)
                     .build()
                 , HttpStatus.CREATED);
 

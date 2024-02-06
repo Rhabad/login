@@ -4,6 +4,8 @@ import com.login.model.dao.UsuarioDao;
 import com.login.model.dto.UsuarioDto;
 import com.login.model.entity.Usuario;
 import com.login.service.IUsuarioService;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +33,11 @@ public class UsuarioImplService implements IUsuarioService {
     @Transactional
     public Usuario save(UsuarioDto usuarioDto) {
         Usuario usuario = Usuario.builder()
-                    .id(usuarioDto.getId())
-                    .nombre(usuarioDto.getNombre())
-                    .apellido(usuarioDto.getApellido())
-                    .email(usuarioDto.getEmail())
-                    .password(usuarioDto.getPassword())
+                .id(usuarioDto.getId())
+                .nombre(usuarioDto.getNombre())
+                .apellido(usuarioDto.getApellido())
+                .email(usuarioDto.getEmail())
+                .password(usuarioDto.getPassword())
                 .build();
 
         return usuarioDao.save(usuario);
@@ -43,17 +45,23 @@ public class UsuarioImplService implements IUsuarioService {
 
     @Override
     public Usuario validarRegistro(Usuario usuario) {
-        String query = "from Usuario where email = :email and password = :password";
-        List<Usuario> lista =entityManager.createQuery(query)
+        String query = "from Usuario where email = :email";
+        List<Usuario> lista = entityManager.createQuery(query)
                 .setParameter("email", usuario.getEmail())
-                .setParameter("password", usuario.getPassword())
                 .getResultList();
 
-        if (lista.isEmpty()){
+        if (lista.isEmpty()) {
             return null;
-        } else {
+        }
+
+        String passwordHashed = lista.get(0).getPassword();
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+
+        if (argon2.verify(passwordHashed, usuario.getPassword())) {
             return lista.get(0);
         }
+
+        return null;
     }
 
     @Override

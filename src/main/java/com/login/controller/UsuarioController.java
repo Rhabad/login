@@ -4,6 +4,8 @@ import com.login.model.dto.UsuarioDto;
 import com.login.model.entity.Usuario;
 import com.login.model.payload.MensajeResponse;
 import com.login.service.IUsuarioService;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -48,18 +50,28 @@ public class UsuarioController {
     * */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> create(@RequestBody UsuarioDto usuarioDto){
-        Usuario usuarioSave = null;
+        Usuario usuario = null;
 
         try {
-            usuarioSave = usuarioService.save(usuarioDto);
+            usuario = usuarioService.save(usuarioDto);
+
+            // trae el valor y luego lo encripta, el password.
+            Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+            String hash = argon2.hash(1, 1024, 1, usuario.getPassword());
+            usuario.setPassword(hash);
+
+            // actualizamos para que se guarde en la base de datos
+            usuarioService.update(usuario);
+
 
             usuarioDto = UsuarioDto.builder()
-                        .id(usuarioSave.getId())
-                        .nombre(usuarioSave.getNombre())
-                        .apellido(usuarioSave.getApellido())
-                        .email(usuarioSave.getEmail())
-                        .password(usuarioSave.getPassword())
+                        .id(usuario.getId())
+                        .nombre(usuario.getNombre())
+                        .apellido(usuario.getApellido())
+                        .email(usuario.getEmail())
+                        .password(usuario.getPassword())
                     .build();
+
 
             return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("Usuario Registado Con Exito")

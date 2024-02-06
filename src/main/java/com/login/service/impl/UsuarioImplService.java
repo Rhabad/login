@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class UsuarioImplService implements IUsuarioService {
 
     @Autowired
@@ -29,7 +30,7 @@ public class UsuarioImplService implements IUsuarioService {
     @Override
     @Transactional
     public Usuario save(UsuarioDto usuarioDto) {
-        Usuario register = Usuario.builder()
+        Usuario usuario = Usuario.builder()
                     .id(usuarioDto.getId())
                     .nombre(usuarioDto.getNombre())
                     .apellido(usuarioDto.getApellido())
@@ -37,7 +38,7 @@ public class UsuarioImplService implements IUsuarioService {
                     .password(usuarioDto.getPassword())
                 .build();
 
-        return usuarioDao.save(register);
+        return usuarioDao.save(usuario);
     }
 
     @Override
@@ -53,5 +54,10 @@ public class UsuarioImplService implements IUsuarioService {
         } else {
             return lista.get(0);
         }
+    }
+
+    @Override
+    public void update(Usuario usuario) {
+        entityManager.merge(usuario);
     }
 }

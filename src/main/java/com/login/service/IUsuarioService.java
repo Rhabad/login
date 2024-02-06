@@ -10,4 +10,5 @@ public interface IUsuarioService {
     Usuario save(UsuarioDto usuarioDto);
 
     Usuario validarRegistro(Usuario usuario);
+    void update(Usuario usuario);
 }

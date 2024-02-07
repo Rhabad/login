@@ -33,23 +33,23 @@ public class UsuarioController {
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("No hay registro en la base de datos")
                     .object(null)
-                .build()
-            , HttpStatus.OK
+                    .build()
+                    , HttpStatus.OK
             );
         }
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Registros encontrados")
                 .object(getList)
-            .build()
-        , HttpStatus.OK
+                .build()
+                , HttpStatus.OK
         );
     }
 
     /*
-    * Crear un nuevo registro.
-    * */
+     * Crear un nuevo registro.
+     * */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> create(@RequestBody UsuarioDto usuarioDto){
+    public ResponseEntity<?> create(@RequestBody UsuarioDto usuarioDto) {
         Usuario usuario = null;
 
         try {
@@ -63,28 +63,38 @@ public class UsuarioController {
             // actualizamos para que se guarde en la base de datos
             usuarioService.update(usuario);
 
+            Usuario usuarioExistente = usuarioService.findByEmail(usuario);
+
+            if (usuario.getEmail().equals(usuarioExistente.getEmail())) {
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("Usuario existente, cree otro")
+                        .object(null)
+                        .build()
+                        , HttpStatus.NOT_ACCEPTABLE);
+            }
+
 
             usuarioDto = UsuarioDto.builder()
-                        .id(usuario.getId())
-                        .nombre(usuario.getNombre())
-                        .apellido(usuario.getApellido())
-                        .email(usuario.getEmail())
-                        .password(usuario.getPassword())
+                    .id(usuario.getId())
+                    .nombre(usuario.getNombre())
+                    .apellido(usuario.getApellido())
+                    .email(usuario.getEmail())
+                    .password(usuario.getPassword())
                     .build();
 
 
             return new ResponseEntity<>(MensajeResponse.builder()
-                        .mensaje("Usuario Registado Con Exito")
-                        .object(usuarioDto)
+                    .mensaje("Usuario Registado Con Exito")
+                    .object(usuarioDto)
                     .build()
-                , HttpStatus.CREATED);
+                    , HttpStatus.CREATED);
 
-        } catch (DataAccessException exData){
+        } catch (DataAccessException exData) {
             return new ResponseEntity<>(MensajeResponse.builder()
-                        .mensaje(exData.getMessage())
-                        .object(null)
+                    .mensaje(exData.getMessage())
+                    .object(null)
                     .build()
-                , HttpStatus.CREATED);
+                    , HttpStatus.CREATED);
         }
     }
 

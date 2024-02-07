@@ -30,6 +30,15 @@ public class UsuarioImplService implements IUsuarioService {
     }
 
     @Override
+    public Usuario findByEmail(Usuario usuario) {
+        String query = "from Usuario where email = :email";
+        List<Usuario> lista = entityManager.createQuery(query)
+                .setParameter("email", usuario.getEmail())
+                .getResultList();
+        return lista.get(0);
+    }
+
+    @Override
     @Transactional
     public Usuario save(UsuarioDto usuarioDto) {
         Usuario usuario = Usuario.builder()

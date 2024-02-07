@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IUsuarioService {
     List<Usuario> findAll();
+    Usuario findByEmail(Usuario usuario);
+
     Usuario save(UsuarioDto usuarioDto);
 
     Usuario validarRegistro(Usuario usuario);

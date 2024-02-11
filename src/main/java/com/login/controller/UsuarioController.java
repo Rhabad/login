@@ -53,19 +53,20 @@ public class UsuarioController {
         Usuario usuario = null;
 
         try {
-            usuario = usuarioService.save(usuarioDto);
+            //usuario = usuarioService.save(usuarioDto);
 
             // trae el valor y luego lo encripta, el password.
             Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-            String hash = argon2.hash(1, 1024, 1, usuario.getPassword());
-            usuario.setPassword(hash);
+            String hash = argon2.hash(1, 1024, 1, usuarioDto.getPassword());
+
+            usuarioDto.setPassword(hash);
 
             // actualizamos para que se guarde en la base de datos
-            usuarioService.update(usuario);
+            //usuarioService.update(usuario);
 
-            Usuario usuarioExistente = usuarioService.findByEmail(usuario);
+            Usuario usuarioExistente = usuarioService.findByEmail(usuarioDto);
 
-            if (usuario.getEmail().equals(usuarioExistente.getEmail())) {
+            if (usuarioExistente != null && usuarioDto.getEmail().equals(usuarioExistente.getEmail())) {
                 return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("Usuario existente, cree otro")
                         .object(null)
@@ -73,6 +74,7 @@ public class UsuarioController {
                         , HttpStatus.NOT_ACCEPTABLE);
             }
 
+            usuario = usuarioService.save(usuarioDto);
 
             usuarioDto = UsuarioDto.builder()
                     .id(usuario.getId())

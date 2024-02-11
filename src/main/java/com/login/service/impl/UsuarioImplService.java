@@ -30,11 +30,16 @@ public class UsuarioImplService implements IUsuarioService {
     }
 
     @Override
-    public Usuario findByEmail(Usuario usuario) {
+    public Usuario findByEmail(UsuarioDto usuarioDto) {
         String query = "from Usuario where email = :email";
         List<Usuario> lista = entityManager.createQuery(query)
-                .setParameter("email", usuario.getEmail())
+                .setParameter("email", usuarioDto.getEmail())
                 .getResultList();
+
+        if (lista.isEmpty()){
+            return null;
+        }
+
         return lista.get(0);
     }
 

@@ -53,16 +53,13 @@ public class UsuarioController {
         Usuario usuario = null;
 
         try {
-            //usuario = usuarioService.save(usuarioDto);
 
             // trae el valor y luego lo encripta, el password.
             Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
             String hash = argon2.hash(1, 1024, 1, usuarioDto.getPassword());
 
+            //nuevo password encriptado
             usuarioDto.setPassword(hash);
-
-            // actualizamos para que se guarde en la base de datos
-            //usuarioService.update(usuario);
 
             Usuario usuarioExistente = usuarioService.findByEmail(usuarioDto);
 

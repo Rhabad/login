@@ -25,7 +25,7 @@ public class UsuarioController {
     private IUsuarioService usuarioService;
 
     // Mostrar los usuarios, es algo que no se implementara, pero sirve para mirar.
-    @RequestMapping(value = "/show")
+    @RequestMapping(value = "/show", method = RequestMethod.GET)
     public ResponseEntity<?> showAll() {
         List<Usuario> getList = usuarioService.findAll();
 
